@@ -17,11 +17,18 @@ class DefaultOrderService (
     val orderRepository: OrderRepository
         ) : OrderService {
     override fun createOrder(): OrderModel {
-        TODO("Not yet implemented")
+        TODO()
     }
 
     override fun getOrder(id: UUID): OrderModel {
-        TODO("Not yet implemented")
+
+        val optionalOrder: Optional<OrderEntity> = orderRepository.findById(id)
+        if (optionalOrder.isPresent) {
+            val order: OrderEntity = optionalOrder.get()
+            return order.toModel()
+        } else {
+            // alternative processing....
+        }
     }
 
     override fun moveItemToCart(orderId: UUID, itemId: UUID, amount: Int) {
