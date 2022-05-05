@@ -1,4 +1,4 @@
-package com.itmo.microservices.demo.delivery.impl.entity
+package com.itmo.microservices.demo.order.impl.entity
 
 import java.util.*
 import javax.persistence.*
