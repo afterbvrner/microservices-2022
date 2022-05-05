@@ -1,6 +1,7 @@
 package com.itmo.microservices.demo.delivery.impl.service
 
 import com.itmo.microservices.demo.delivery.api.service.DeliveryService
+import com.itmo.microservices.demo.delivery.impl.entity.DeliverySlot
 import com.itmo.microservices.demo.delivery.impl.repository.DeliveryRepository
 import com.itmo.microservices.demo.users.impl.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -12,12 +13,20 @@ import kotlin.time.DurationUnit
 @Service
 class DeliveryServiceImpl(
     private val deliveryRepository: DeliveryRepository): DeliveryService {
-
+    init {
+        if (true) for (i in 0..1000) {
+            val slot = DeliverySlot().also { x->
+                x.datetime = Timestamp(System.currentTimeMillis() + i * 10000)
+                x.isReserved = false
+            }
+            deliveryRepository.save(slot)
+        }
+    }
     override fun getAvailableSlots(numberOfSlots: Int): List<Int> =
-        deliveryRepository.findAllByIsReservedFalseAndDatetimeGreaterThan(Timestamp.from(Date().toInstant()))
+        deliveryRepository.findAllByIsReservedFalseAndDatetimeGreaterThan(Timestamp(System.currentTimeMillis()))
             .groupBy { x -> x.datetime }
             .keys
-            .mapNotNull { x -> (Date().time.seconds - x!!.time.seconds).toInt(DurationUnit.SECONDS) }
+            .map { x -> ((x!!.time - Date().time) / 1000L).toInt() }
             .slice(0..numberOfSlots)
             .toList()
 
