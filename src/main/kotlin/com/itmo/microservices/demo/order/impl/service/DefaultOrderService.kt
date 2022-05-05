@@ -5,6 +5,7 @@ import com.itmo.microservices.demo.delivery.impl.entity.BookingEntity
 import com.itmo.microservices.demo.order.api.model.OrderModel
 import com.itmo.microservices.demo.order.api.model.PaymentLogRecordDto
 import com.itmo.microservices.demo.order.api.service.OrderService
+import com.itmo.microservices.demo.order.common.OrderStatus
 import com.itmo.microservices.demo.order.impl.entity.OrderEntity
 import com.itmo.microservices.demo.order.impl.entity.PaymentLogRecordEntity
 import com.itmo.microservices.demo.order.impl.repository.OrderRepository
@@ -29,7 +30,17 @@ class DefaultOrderService (
     }
 
     override fun finalizeOrder(id: UUID): BookingDto {
-        TODO("Not yet implemented")
+
+        val optionalOrder: Optional<OrderEntity> = orderRepository.findById(id)
+        if (optionalOrder.isPresent) {
+            val order: OrderEntity = optionalOrder.get()
+            order.status = OrderStatus.BOOKED
+            orderRepository.save(order)
+        } else {
+            // alternative processing....
+        }
+        return BookingDto(UUID(0,0), emptySet()) //заглушка
+        TODO("- add sync request to warehouse service, - add processing of not existing order")
     }
 
     override fun setDeliverySlot(id: UUID, slotInSec: Int): BookingDto {
