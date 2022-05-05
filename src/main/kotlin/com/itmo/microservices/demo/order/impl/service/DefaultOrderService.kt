@@ -33,7 +33,15 @@ class DefaultOrderService (
     }
 
     override fun setDeliverySlot(id: UUID, slotInSec: Int): BookingDto {
-        TODO("Not yet implemented")
+        val optionalOrder: Optional<OrderEntity> = orderRepository.findById(id)
+        if (optionalOrder.isPresent) {
+            val order: OrderEntity = optionalOrder.get()
+            order.deliveryDuration = slotInSec
+            orderRepository.save(order)
+        } else {
+            // alternative processing....
+        }
+        return BookingDto(UUID(0, 0), emptySet())
     }
 
     fun PaymentLogRecordEntity.toModel(): PaymentLogRecordDto {
