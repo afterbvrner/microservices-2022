@@ -17,7 +17,7 @@ class DeliveryController(private val deliveryService: DeliveryService) {
 
     @GetMapping("/slots")
     @Operation(
-        summary = "Получение возможных сейчас слотов доставки",
+        summary = "Getting available delivery slots",
         responses = [ApiResponse(description = "OK", responseCode = "200")],
         security = [SecurityRequirement(name = "bearerAuth")]
     )
