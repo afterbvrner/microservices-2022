@@ -13,4 +13,6 @@ class DeliverySlot {
     var id: UUID? = null
     var datetime: Timestamp? = null
     var isReserved: Boolean? = null
+    var seconds: Int? = null
+    var orderId: Int? = null
 }

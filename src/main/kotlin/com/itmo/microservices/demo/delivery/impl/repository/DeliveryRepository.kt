@@ -8,6 +8,8 @@ import java.util.*
 
 @Repository
 interface DeliveryRepository: JpaRepository<DeliverySlot, UUID> {
-    fun findAllByDatetimeIs(date: Timestamp):List<DeliverySlot>
-    fun findAllByIsReservedFalseAndDatetimeGreaterThan(date: Timestamp):List<DeliverySlot>
+    fun findTop1000ByIsReservedFalse():List<DeliverySlot>
+    fun findAllBySeconds(sec: Int):List<DeliverySlot>
+    fun findByOrderId(orederId: Int):DeliverySlot
+    fun findAllByIsReservedTrueAndDatetimeGreaterThan(timestamp: Timestamp): List<DeliverySlot>
 }
