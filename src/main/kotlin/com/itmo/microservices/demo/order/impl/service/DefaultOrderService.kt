@@ -14,8 +14,9 @@ import java.util.stream.Collectors
 
 @Service
 class DefaultOrderService (
-    val orderRepository: OrderRepository
-        ) : OrderService {
+    val orderRepository: OrderRepository,
+    private val eventBus: EventBus
+) : OrderService {
     override fun createOrder(): OrderModel {
         TODO("Not yet implemented")
     }
@@ -38,6 +39,7 @@ class DefaultOrderService (
             val order: OrderEntity = optionalOrder.get()
             order.deliveryDuration = slotInSec
             orderRepository.save(order)
+            eventBus.post()
         } else {
             // alternative processing....
         }
