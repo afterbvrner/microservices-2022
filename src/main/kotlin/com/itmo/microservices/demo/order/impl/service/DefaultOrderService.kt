@@ -1,5 +1,6 @@
 package com.itmo.microservices.demo.order.impl.service
 
+import com.itmo.microservices.demo.common.exception.NotFoundException
 import com.itmo.microservices.demo.delivery.api.model.BookingDto
 import com.itmo.microservices.demo.order.impl.entity.BookingEntity
 import com.itmo.microservices.demo.order.api.model.OrderModel
@@ -41,7 +42,7 @@ class DefaultOrderService (
             orderRepository.save(order)
             eventBus.post()
         } else {
-            // alternative processing....
+            throw NotFoundException("Order with id $id not found")
         }
         return BookingDto(UUID(0, 0), emptySet())
     }
