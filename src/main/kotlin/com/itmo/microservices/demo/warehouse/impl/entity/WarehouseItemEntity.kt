@@ -27,4 +27,14 @@ class WarehouseItemEntity {
         this.price = price
         this.amount = amount
     }
+
+    fun withAmount(amount: Int?): WarehouseItemEntity {
+        return WarehouseItemEntity(
+                this.id,
+                this.title,
+                this.description,
+                this.price,
+                amount
+        )
+    }
 }

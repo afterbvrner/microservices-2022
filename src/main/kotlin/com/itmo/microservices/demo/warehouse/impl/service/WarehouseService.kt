@@ -1,9 +1,12 @@
 package com.itmo.microservices.demo.warehouse.impl.service
 
 import com.itmo.microservices.demo.warehouse.api.model.CatalogItemDto
+import com.itmo.microservices.demo.warehouse.api.model.ItemAmount
+import com.itmo.microservices.demo.warehouse.api.model.ProductBookingModel
 import com.itmo.microservices.demo.warehouse.impl.entity.WarehouseItemEntity
 import com.itmo.microservices.demo.warehouse.impl.repository.WarehouseRepository
 import org.springframework.stereotype.Service
+import java.util.UUID
 import java.util.stream.Collectors
 
 @Service
@@ -20,6 +23,18 @@ class WarehouseService(
         return items.stream()
                 .map { item -> item.toModel() }
                 .collect(Collectors.toList())
+    }
+
+    fun finalize(items: List<ItemAmount>): List<UUID> {
+        val failedItems = mutableListOf<UUID>()
+        for (item in items) {
+            val itemEntity = warehouseRepository.findById(item.itemId)
+            if (itemEntity.isEmpty || itemEntity.get().amount!! < item.amount)
+                failedItems.add(item.itemId)
+            else
+                warehouseRepository.save(itemEntity.get().withAmount(itemEntity.get().amount!! - item.amount))
+        }
+        return failedItems
     }
 
     fun WarehouseItemEntity.toModel(): CatalogItemDto {
