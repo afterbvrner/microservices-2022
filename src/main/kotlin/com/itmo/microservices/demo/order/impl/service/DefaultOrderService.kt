@@ -10,13 +10,15 @@ import com.itmo.microservices.demo.order.common.OrderStatus
 import com.itmo.microservices.demo.order.impl.entity.OrderEntity
 import com.itmo.microservices.demo.order.impl.entity.PaymentLogRecordEntity
 import com.itmo.microservices.demo.order.impl.repository.OrderRepository
+import com.itmo.microservices.demo.order.impl.service.WarehouseService
 import org.springframework.stereotype.Service
+import org.webjars.NotFoundException
 import java.util.*
 import java.util.stream.Collectors
 
 @Service
 class DefaultOrderService (
-    val orderRepository: OrderRepository,
+    val orderRepository: OrderRepository, val warehouseService: WarehouseService
     private val eventBus: EventBus
 ) : OrderService {
     override fun createOrder(): OrderModel {
@@ -41,7 +43,21 @@ class DefaultOrderService (
     }
 
     override fun finalizeOrder(id: UUID): BookingDto {
-        TODO("Not yet implemented")
+
+        val optionalOrder: Optional<OrderEntity> = orderRepository.findById(id)
+        val bookingDto = BookingDto(UUID(0,0), emptySet())
+        if (optionalOrder.isPresent) {
+            val order: OrderEntity = optionalOrder.get()
+            order.status = OrderStatus.BOOKED
+
+            orderRepository.save(order)
+
+            bookingDto.failedItems = warehouseService.finalizeItems()
+        } else {
+            throw NotFoundException("Order with id $id not found")
+        }
+        return bookingDto
+
     }
 
     override fun setDeliverySlot(id: UUID, slotInSec: Int): BookingDto {
