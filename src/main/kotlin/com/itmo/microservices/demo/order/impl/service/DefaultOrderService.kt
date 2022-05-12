@@ -6,6 +6,7 @@ import com.itmo.microservices.demo.order.impl.entity.BookingEntity
 import com.itmo.microservices.demo.order.api.model.OrderModel
 import com.itmo.microservices.demo.order.api.model.PaymentLogRecordDto
 import com.itmo.microservices.demo.order.api.service.OrderService
+import com.itmo.microservices.demo.order.common.OrderStatus
 import com.itmo.microservices.demo.order.impl.entity.OrderEntity
 import com.itmo.microservices.demo.order.impl.entity.PaymentLogRecordEntity
 import com.itmo.microservices.demo.order.impl.repository.OrderRepository
@@ -19,7 +20,9 @@ class DefaultOrderService (
     private val eventBus: EventBus
 ) : OrderService {
     override fun createOrder(): OrderModel {
-        TODO()
+        val order: OrderEntity = OrderEntity(null, System.currentTimeMillis(), OrderStatus.COLLECTING, emptyList(), null, emptyList())
+        orderRepository.save(order)
+        return order.toModel()
     }
 
     override fun getOrder(id: UUID): OrderModel {
