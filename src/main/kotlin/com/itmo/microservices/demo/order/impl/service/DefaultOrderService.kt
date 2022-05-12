@@ -1,5 +1,6 @@
 package com.itmo.microservices.demo.order.impl.service
 
+import com.google.common.eventbus.EventBus
 import com.itmo.microservices.demo.common.exception.NotFoundException
 import com.itmo.microservices.demo.delivery.api.model.BookingDto
 import com.itmo.microservices.demo.order.impl.entity.BookingEntity
@@ -40,11 +41,11 @@ class DefaultOrderService (
             val order: OrderEntity = optionalOrder.get()
             order.deliveryDuration = slotInSec
             orderRepository.save(order)
-            eventBus.post()
+            eventBus.post("DeliverySlotSet")
         } else {
             throw NotFoundException("Order with id $id not found")
         }
-        return BookingDto(UUID(0, 0), emptySet())
+        return BookingDto(id, emptySet())
     }
 
     fun PaymentLogRecordEntity.toModel(): PaymentLogRecordDto {
