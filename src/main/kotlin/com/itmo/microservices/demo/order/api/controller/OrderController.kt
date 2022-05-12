@@ -14,15 +14,15 @@ class OrderController(
     @PostMapping
     fun createOrder(): OrderModel = orderService.createOrder()
 
-    @GetMapping("/{order_id}")
-    fun getOrder(@PathVariable order_id: UUID): OrderModel = orderService.getOrder(order_id)
+    @GetMapping("/{orderId}")
+    fun getOrder(@PathVariable orderId: UUID): OrderModel = orderService.getOrder(orderId)
 
-    @PutMapping("/{order_id}/items/{item_id}")
-    fun moveItemToCart(@PathVariable order_id: UUID, @PathVariable item_id: UUID, @RequestParam amount: Int) = orderService.moveItemToCart(order_id, item_id, amount)
+    @PutMapping("/{orderId}/items/{itemId}")
+    fun moveItemToCart(@PathVariable orderId: UUID, @PathVariable itemId: UUID, @RequestParam amount: Int) = orderService.moveItemToCart(orderId, itemId, amount)
 
-    @PostMapping("/{order_id}/bookings")
-    fun finalizeOrder(@PathVariable order_id: UUID): BookingDto = orderService.finalizeOrder(order_id)
+    @PostMapping("/{orderId}/bookings")
+    fun finalizeOrder(@PathVariable orderId: UUID): BookingDto = orderService.finalizeOrder(orderId)
 
-    @PostMapping("/{order_id}/delivery")
-    fun setDeliverySlot(@PathVariable order_id: UUID, @RequestParam slot_in_sec: Int): BookingDto = orderService.setDeliverySlot(order_id, slot_in_sec)
+    @PostMapping("/{orderId}/delivery")
+    fun setDeliverySlot(@PathVariable orderId: UUID, @RequestParam("slot_in_sec") slotInSec: Int): BookingDto = orderService.setDeliverySlot(orderId, slotInSec)
 }

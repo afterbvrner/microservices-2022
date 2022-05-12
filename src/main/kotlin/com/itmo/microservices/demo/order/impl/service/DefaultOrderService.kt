@@ -2,7 +2,7 @@ package com.itmo.microservices.demo.order.impl.service
 
 import com.itmo.microservices.demo.common.exception.NotFoundException
 import com.itmo.microservices.demo.delivery.api.model.BookingDto
-import com.itmo.microservices.demo.delivery.impl.entity.BookingEntity
+import com.itmo.microservices.demo.order.impl.entity.BookingEntity
 import com.itmo.microservices.demo.order.api.model.OrderModel
 import com.itmo.microservices.demo.order.api.model.PaymentLogRecordDto
 import com.itmo.microservices.demo.order.api.service.OrderService
@@ -15,8 +15,9 @@ import java.util.stream.Collectors
 
 @Service
 class DefaultOrderService (
-    val orderRepository: OrderRepository
-        ) : OrderService {
+    val orderRepository: OrderRepository,
+    private val eventBus: EventBus
+) : OrderService {
     override fun createOrder(): OrderModel {
         TODO()
     }
@@ -41,7 +42,16 @@ class DefaultOrderService (
     }
 
     override fun setDeliverySlot(id: UUID, slotInSec: Int): BookingDto {
-        TODO("Not yet implemented")
+        val optionalOrder: Optional<OrderEntity> = orderRepository.findById(id)
+        if (optionalOrder.isPresent) {
+            val order: OrderEntity = optionalOrder.get()
+            order.deliveryDuration = slotInSec
+            orderRepository.save(order)
+            eventBus.post()
+        } else {
+            throw NotFoundException("Order with id $id not found")
+        }
+        return BookingDto(UUID(0, 0), emptySet())
     }
 
     fun PaymentLogRecordEntity.toModel(): PaymentLogRecordDto {
