@@ -7,5 +7,5 @@ import java.util.UUID
 
 @Repository
 interface PaymentSubmissionRepository: JpaRepository<PaymentSubmissionEntity, Long> {
-    fun getByOrderByTransactionId(orderId: UUID): PaymentSubmissionEntity
+    fun getByTransactionId(transactionId: UUID): PaymentSubmissionEntity
 }
