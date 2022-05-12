@@ -11,6 +11,7 @@ import com.itmo.microservices.demo.order.impl.entity.PaymentLogRecordEntity
 import com.itmo.microservices.demo.order.impl.repository.OrderRepository
 import com.itmo.microservices.demo.order.impl.service.WarehouseService
 import org.springframework.stereotype.Service
+import org.webjars.NotFoundException
 import java.util.*
 import java.util.stream.Collectors
 
@@ -42,7 +43,7 @@ class DefaultOrderService (
 
             bookingDto.failedItems = warehouseService.finalizeItems()
         } else {
-            // alternative processing....
+            throw NotFoundException("Order with id $id not found")
         }
         return bookingDto
 
