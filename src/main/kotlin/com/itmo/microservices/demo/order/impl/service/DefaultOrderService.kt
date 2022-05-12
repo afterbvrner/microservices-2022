@@ -11,7 +11,6 @@ import com.itmo.microservices.demo.order.impl.entity.OrderEntity
 import com.itmo.microservices.demo.order.impl.entity.PaymentLogRecordEntity
 import com.itmo.microservices.demo.order.impl.repository.ItemMapRepository
 import com.itmo.microservices.demo.order.impl.repository.OrderRepository
-import org.springframework.data.crossstore.ChangeSetPersister
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.stream.Collectors
@@ -20,6 +19,7 @@ import java.util.stream.Collectors
 class DefaultOrderService (
     val orderRepository: OrderRepository,
     val itemMapRepository : ItemMapRepository,
+    private val EventBus: EventBus,
         ) : OrderService {
     override fun createOrder(): OrderModel {
         TODO("Not yet implemented")
@@ -31,19 +31,15 @@ class DefaultOrderService (
 
     override fun moveItemToCart(orderId: UUID, itemId: UUID, amount: Int) {
         val optionalOrder: Optional<OrderEntity> = orderRepository.findById(orderId);
-        val optionalItem: Optional<ItemMapEntity> = itemMapRepository.findById(itemId);
-        if (optionalOrder.isPresent && optionalItem.isPresent) {
+        if (optionalOrder.isPresent) {
             val order: OrderEntity = optionalOrder.get();
-            val item: ItemMapEntity = optionalItem.get();
-
-            if (item.amount!! > 0) {
-                //order.itemsMap.add(item)
-                orderRepository.save(order);
-                eventBus
-            } else
-                throw NotFoundException("Amount item ($itemId) is 0");
-
-            //order.itemsMap.
+            order.itemsMap.add(ItemMapEntity(
+                itemId,
+                null,
+                amount,
+            ))
+            orderRepository.save(order);
+            EventBus.post();
         } else
             throw NotFoundException("Order or Item not found");
     }

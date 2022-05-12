@@ -15,7 +15,7 @@ class ItemMapEntity {
 
     constructor()
 
-    constructor(id: UUID, catalogItemId: UUID, amount: Int) {
+    constructor(id: UUID, catalogItemId: UUID?, amount: Int) {
         this.id = id
         this.catalogItemId = catalogItemId
         this.amount = amount

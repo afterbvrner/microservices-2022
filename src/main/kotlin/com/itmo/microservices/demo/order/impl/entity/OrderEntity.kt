@@ -13,8 +13,8 @@ class OrderEntity {
     var id: UUID? = null
     var timeCreated: Long? = null
     var status: OrderStatus? = null
-    @OneToMany
-    var itemsMap: List<ItemMapEntity> = emptyList()
+    @OneToMany(cascade = arrayOf(CascadeType.ALL))
+    var itemsMap: MutableList<ItemMapEntity> = mutableListOf<ItemMapEntity>()
     var deliveryDuration: Int? = null
     @OneToMany
     var paymentHistory: List<PaymentLogRecordEntity> = emptyList()
@@ -24,7 +24,7 @@ class OrderEntity {
     constructor(id: UUID?,
                 timeCreated: Long?,
                 status: OrderStatus?,
-                itemsMap: List<ItemMapEntity>,
+                itemsMap: MutableList<ItemMapEntity>,
                 deliveryDuration: Int?,
                 paymentHistory: List<PaymentLogRecordEntity>) {
         this.id = id
