@@ -9,7 +9,6 @@ import com.itmo.microservices.demo.order.api.service.OrderService
 import com.itmo.microservices.demo.order.impl.entity.ItemMapEntity
 import com.itmo.microservices.demo.order.impl.entity.OrderEntity
 import com.itmo.microservices.demo.order.impl.entity.PaymentLogRecordEntity
-import com.itmo.microservices.demo.order.impl.repository.ItemMapRepository
 import com.itmo.microservices.demo.order.impl.repository.OrderRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -18,7 +17,6 @@ import java.util.stream.Collectors
 @Service
 class DefaultOrderService (
     val orderRepository: OrderRepository,
-    val itemMapRepository : ItemMapRepository,
     private val EventBus: EventBus,
         ) : OrderService {
     override fun createOrder(): OrderModel {
