@@ -8,7 +8,7 @@ import java.util.*
 import java.util.stream.Collectors
 
 @Service
-class WarehouseService(
+class WarehouseService1(
         val warehouseRepository: WarehouseRepository
 ) {
 
