@@ -34,8 +34,8 @@ class DefaultOrderService (
         if (optionalOrder.isPresent) {
             val order: OrderEntity = optionalOrder.get();
             order.itemsMap.add(ItemMapEntity(
-                itemId,
                 null,
+                itemId,
                 amount,
             ))
             orderRepository.save(order);
